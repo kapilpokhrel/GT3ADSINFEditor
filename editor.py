@@ -4,6 +4,15 @@ class Editor:
     def __read4Bytes(self, file):
         return int.from_bytes(file.read(4), "little")
     
+    def __readString(self, file, ptr):
+        file.seek(ptr)
+        str = b''
+        ch = file.read(1)
+        while(ch not in [b'\x00', b'']):
+            str += ch
+            ch = file.read(1)
+        return str.decode('ASCII')
+    
     def __extract(self):
         file = self.file
         file.seek(12)
@@ -32,7 +41,7 @@ class Editor:
             tracks = []
 
             current_pointer = playlist['pointer']
-            for i in range(len(playlist['trackCount'])):
+            for i in range(playlist['trackCount']):
                 file.seek(current_pointer)
                 basefilename_ptr = self.__read4Bytes(file)
                 filename_ptr = self.__read4Bytes(file)
@@ -42,10 +51,10 @@ class Editor:
                                    
                 current_pointer += 20 #20 bytes for each song
 
-                basefilename = self.__readstring(file, basefilename_ptr)
-                filename = self.__readstring(file, filename_ptr)
-                trackname = self.__readstring(file, trackname_ptr)
-                artistname = self.__readstring(file, artistname_ptr)
+                basefilename = self.__readString(file, basefilename_ptr)
+                filename = self.__readString(file, filename_ptr)
+                trackname = self.__readString(file, trackname_ptr)
+                artistname = self.__readString(file, artistname_ptr)
 
                 unkData_size = 0
                 if(playlists.index(playlist) < len(playlists)-1):
