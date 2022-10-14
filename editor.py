@@ -14,8 +14,8 @@ class Editor:
 
         tracks_added = 0
         while(tracks_added < self.total_tracks):
-            pointer = self.__read4bytes(file)
-            trackCount = self.__read4bytes(file)
+            pointer = self.__read4Bytes(file)
+            trackCount = self.__read4Bytes(file)
             playlists.append({'pointer': pointer, 'trackCount': trackCount})
             tracks_added += trackCount
         
@@ -27,18 +27,18 @@ class Editor:
         if(self.isPAL):
             file.seek(8, 1)
         
-        tracksInfo_offset = self.__read4bytes(file)
+        tracksInfo_offset = self.__read4Bytes(file)
         for playlist in playlists:
             tracks = []
 
             current_pointer = playlist['pointer']
             for i in range(len(playlist['trackCount'])):
                 file.seek(current_pointer)
-                basefilename_ptr = self.__read4bytes(file)
-                filename_ptr = self.__read4bytes(file)
-                trackname_ptr = self.__read4bytes(file)
-                artistname_ptr = self.__read4bytes(file)
-                unkData_ptr = self.__read4bytes(file)
+                basefilename_ptr = self.__read4Bytes(file)
+                filename_ptr = self.__read4Bytes(file)
+                trackname_ptr = self.__read4Bytes(file)
+                artistname_ptr = self.__read4Bytes(file)
+                unkData_ptr = self.__read4Bytes(file)
                                    
                 current_pointer += 20 #20 bytes for each song
 
@@ -50,7 +50,7 @@ class Editor:
                 unkData_size = 0
                 if(playlists.index(playlist) < len(playlists)-1):
                     file.seek(current_pointer+16) #we only want next song's data pointer, so skip 4*4 bytes
-                    nextunkData_ptr = self.__read4bytes(file)
+                    nextunkData_ptr = self.__read4Bytes(file)
                     unkData_size = nextunkData_ptr - unkData_ptr
                 else:
                     unkData_size = tracksInfo_offset - unkData_ptr
