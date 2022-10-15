@@ -17,12 +17,51 @@ table = sg.Table(
 )
 
 layout = [
-    [sg.Button("Open")],
+    [sg.Button("Open"), sg.Button("Add")],
     [table]
 ]
 
 def playlist_to_TableValues(playlist):
-    return [*[[lst['trackname'], lst['filename'], lst['artistname']] for lst in playlist['tracks'] ]]
+    return [*[[lst['trackname'], lst['filename'], lst['artist']] for lst in playlist['tracks'] ]]
+
+def add_window():
+    trackinfo = None
+    layout = [
+        [sg.Text("Enter the details of the track:")],
+        [sg.Text("Filename: ", s=13, justification='r'), sg.In(size=(25, 1), enable_events=True, key="-FILENAME-")],
+        [sg.Text("In-game name: ", s=13, justification='r'), sg.In(size=(25, 1), enable_events=True, key="-TRACKNAME-")],
+        [sg.Text("Artist: ", s=13, justification='r'), sg.In(size=(25, 1), enable_events=True, key="-ARTIST-")],
+        [sg.Push(), sg.Button("Add"), sg.Button("Cancel"), sg.Push()]
+    ]
+    add_window = sg.Window("Track Adder", layout, modal=True)
+    while True:
+        event, values = add_window.read()
+        if event in (sg.WIN_CLOSED, 'Exit') or event == 'Cancel':
+            break
+            
+        elif event == 'Add':
+            filename = values['-FILENAME-']
+            trackname = values['-TRACKNAME-']
+            artist = values['-ARTIST-']
+            if filename == "":
+                sg.popup("Filename can't be empty")
+            elif trackname == "":
+                sg.popup("In-game trackname can't be empty")
+            else:
+                filename = filename.split('.')
+                print(filename)
+                if(len(filename) == 2):
+                    if(filename[1] == "ads"):
+                        artist = "NONE" if artist == "" else artist
+                        trackinfo = [filename[0], values['-FILENAME-'], trackname, artist]
+                        break
+                    else:
+                        sg.popup("filename doesn't have .ads extension")
+                else:
+                    sg.popup("Filename doesn't look like a actual filename")
+        
+    add_window.close()
+    return trackinfo
 
 selected_track = 0
 if __name__ == '__main__':
@@ -45,5 +84,17 @@ if __name__ == '__main__':
                     )
                 except Exception as e:
                     sg.popup(e)
+        
+        elif event == 'Add':
+            if editor == None:
+                sg.popup("Open the ads file first to add track.")
+            else:
+                info = add_window()
+                if info is not None:
+                    editor.add_track(info[0], info[1], info[2], info[3])
+                    window['-TABLE-'].update(
+                        values=playlist_to_TableValues(editor.playlists[2]), # We are only intrested in 3rd playlist
+                        select_rows=[selected_track]
+                    )
     
     window.close()

@@ -71,7 +71,7 @@ class Editor:
                     'basefilename': basefilename,
                     'filename': filename,
                     'trackname': trackname,
-                    'artistname': artistname
+                    'artist': artistname
                 })
             
             playlist.pop('pointer')
@@ -89,8 +89,15 @@ class Editor:
     def assemble_and_save(self, filename):
         pass
         
-    def add_track(self, filename, trackname, artist):
-        pass
+    def add_track(self, basename, filename, trackname, artist):
+        self.playlists[2]['tracks'].append({
+            'basename': basename,
+            'filename': filename,
+            'trackname': trackname,
+            'artist': artist
+        })
+        self.playlists[2]['trackCount'] += 1
+        self.total_tracks += 1
     
     def remove_track(self):
         pass
