@@ -68,7 +68,7 @@ class Editor:
                 unkData[basefilename] = file.read(unkData_size)
                 
                 tracks.append({
-                    'basefilename': basefilename,
+                    'basename': basefilename,
                     'filename': filename,
                     'trackname': trackname,
                     'artist': artistname
@@ -99,5 +99,12 @@ class Editor:
         self.playlists[2]['trackCount'] += 1
         self.total_tracks += 1
     
-    def remove_track(self):
-        pass
+    def remove_track(self, index):
+        basename = self.playlists[2]['tracks'][index]['basename']
+        del self.playlists[2]['tracks'][index]
+
+        if basename in self.unkData:
+            del self.unkData[basename]
+        
+        self.total_tracks -= 1
+        self.playlists[2]['trackCount'] -= 1

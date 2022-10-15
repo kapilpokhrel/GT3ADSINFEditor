@@ -17,7 +17,7 @@ table = sg.Table(
 )
 
 layout = [
-    [sg.Button("Open"), sg.Button("Add")],
+    [sg.Button("Open"),  sg.VerticalSeparator(), sg.Button("Add"), sg.Button("Remove")],
     [table]
 ]
 
@@ -96,5 +96,19 @@ if __name__ == '__main__':
                         values=playlist_to_TableValues(editor.playlists[2]), # We are only intrested in 3rd playlist
                         select_rows=[selected_track]
                     )
+        
+        elif event == 'Remove':
+            if editor == None:
+                sg.popup("Open the ads file first to add track.")
+            else:
+                editor.remove_track(selected_track)
+                selected_track = min(selected_track, editor.playlists[2]['trackCount']-1)
+                window['-TABLE-'].update(
+                    values=playlist_to_TableValues(editor.playlists[2]), # We are only intrested in 3rd playlist
+                    select_rows=[selected_track]
+                )
+        
+        elif event == '-TABLE-':
+            selected_track = values['-TABLE-'][0]
     
     window.close()
