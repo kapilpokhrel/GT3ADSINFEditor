@@ -49,7 +49,6 @@ def add_window():
                 sg.popup("In-game trackname can't be empty")
             else:
                 filename = filename.split('.')
-                print(filename)
                 if(len(filename) == 2):
                     if(filename[1] == "ads"):
                         artist = "NONE" if artist == "" else artist
@@ -105,11 +104,14 @@ if __name__ == '__main__':
                 selected_track = min(selected_track, editor.playlists[2]['trackCount']-1)
                 window['-TABLE-'].update(
                     values=playlist_to_TableValues(editor.playlists[2]), # We are only intrested in 3rd playlist
-                    select_rows=[selected_track]
+                    select_rows=[] if editor.playlists[2]['trackCount'] == 0 else [selected_track]
                 )
         
         elif event == '-TABLE-':
-            selected_track = values['-TABLE-'][0]
+            if(len(values['-TABLE-']) > 1):
+                selected_track = values['-TABLE-'][0]
+            else:
+                selected_track = 0
         
         elif event == 'Save':
             editor.assemble_and_save("out.inf")
