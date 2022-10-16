@@ -17,7 +17,7 @@ table = sg.Table(
 )
 
 layout = [
-    [sg.Button("Open"),  sg.VerticalSeparator(), sg.Button("Add"), sg.Button("Remove")],
+    [sg.Button("Open"), sg.Button("Save"), sg.VerticalSeparator(), sg.Button("Add"), sg.Button("Remove")],
     [table]
 ]
 
@@ -110,5 +110,9 @@ if __name__ == '__main__':
         
         elif event == '-TABLE-':
             selected_track = values['-TABLE-'][0]
+        
+        elif event == 'Save':
+            editor.assemble_and_save("out.inf")
+            sg.popup("Saved as "+"out.inf")
     
     window.close()
