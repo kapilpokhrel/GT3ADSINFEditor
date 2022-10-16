@@ -99,6 +99,8 @@ if __name__ == '__main__':
         elif event == 'Remove':
             if editor == None:
                 sg.popup("Open the ads file first to add track.")
+            elif editor.playlists[2]['trackCount'] == 0:
+                pass
             else:
                 editor.remove_track(selected_track)
                 selected_track = min(selected_track, editor.playlists[2]['trackCount']-1)
@@ -108,7 +110,7 @@ if __name__ == '__main__':
                 )
         
         elif event == '-TABLE-':
-            if(len(values['-TABLE-']) > 1):
+            if(len(values['-TABLE-']) >= 1):
                 selected_track = values['-TABLE-'][0]
             else:
                 selected_track = 0
