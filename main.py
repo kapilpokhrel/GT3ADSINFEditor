@@ -17,7 +17,8 @@ table = sg.Table(
 )
 
 layout = [
-    [sg.Button("Open"), sg.Button("Save"), sg.VerticalSeparator(), sg.Button("Add"), sg.Button("Remove")],
+    [sg.Button("Open"), sg.Button("Save"), sg.VerticalSeparator(),
+        sg.Button("Add"), sg.Button("Remove"), sg.Button("Up"), sg.Button("Down")],
     [table]
 ]
 
@@ -107,6 +108,29 @@ if __name__ == '__main__':
                 window['-TABLE-'].update(
                     values=playlist_to_TableValues(editor.playlists[2]), # We are only intrested in 3rd playlist
                     select_rows=[] if editor.playlists[2]['trackCount'] == 0 else [selected_track]
+                )
+        
+        elif event == 'Up':
+            index = selected_track
+            tracks = editor.playlists[2]['tracks']
+            if(index > 0 and editor != None):
+                tracks[index-1], tracks[index] = tracks[index], tracks[index-1]
+                editor.playlists[2]['tracks'] = tracks
+                window['-TABLE-'].update(
+                    values=playlist_to_TableValues(editor.playlists[2]), # We are only intrested in 3rd playlist
+                    select_rows=[selected_track-1]
+                )
+
+        elif event == 'Down':
+            index = selected_track
+            tracks = editor.playlists[2]['tracks']
+            trackCount = editor.playlists[2]['trackCount']
+            if(editor != None and index < trackCount-1 ):
+                tracks[index+1], tracks[index] = tracks[index], tracks[index+1]
+                editor.playlists[2]['tracks'] = tracks
+                window['-TABLE-'].update(
+                    values=playlist_to_TableValues(editor.playlists[2]), # We are only intrested in 3rd playlist
+                    select_rows=[selected_track+1]
                 )
         
         elif event == '-TABLE-':
