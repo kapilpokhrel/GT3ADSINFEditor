@@ -1,4 +1,4 @@
-# GT3ADSINFEDITOR
+# GT3ADSINFEditor
 GUI Tool for editing Gran Turismo 3 asd.inf files. It allows addition, removal, and to change the order of music tracks inside the .inf file.
 
 ## Running the Script
