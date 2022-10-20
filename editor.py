@@ -79,6 +79,7 @@ class Editor:
         
         self.playlists = playlists
         self.unkData = unkData
+        self.temp_unkData = unkData[playlists[2]['tracks'][0]['basename']]
 
     def __init__(self, filepath) -> None:
         self.file = open(filepath, "rb")
@@ -180,7 +181,7 @@ class Editor:
                     if basename in self.unkData:
                         file.write(self.unkData[basename])
                     else:
-                        file.write(self.unkData[playlists[2]['tracks'][0]['basename']])
+                        file.write(self.temp_unkData)
 
             file.write(tracksInfo)        
 
