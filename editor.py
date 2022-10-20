@@ -79,6 +79,8 @@ class Editor:
         
         self.playlists = playlists
         self.unkData = unkData
+
+        #Store unkData of 1st track to use as a unkData of newly added track for we currently don't know how to generate it.
         self.temp_unkData = unkData[playlists[2]['tracks'][0]['basename']]
 
     def __init__(self, filepath) -> None:
@@ -109,8 +111,14 @@ class Editor:
             
             tracksInfoptrs_blocksize = self.total_tracks*20
             unkData_blocksize = 0
-            for key, value in self.unkData.items():
-                unkData_blocksize += len(value)
+            for playlist in playlists:
+                for track in playlist['tracks']:
+                    basename = track['basename']
+                    if(basename in self.unkData):
+                        unkData_blocksize += len(self.unkData[basename])
+                    else:
+                        unkData_blocksize += len(self.temp_unkData)
+            
             tracksInfo_offset = tracksInfoptrs_offset + tracksInfoptrs_blocksize + unkData_blocksize
             unkData_offset = tracksInfoptrs_offset + tracksInfoptrs_blocksize
             
@@ -157,23 +165,13 @@ class Editor:
                         artists[artist] = tracksInfo_offset + len(tracksInfo)
                         tracksInfo += bytes(artist, 'ascii') + b'\x00'
                     file.write(artists[artist].to_bytes(4, byteorder="little"))
-                    
-                    '''
-                    If track doesn't have any unkData assined to it, i.e. newly added track,
-                    assign pointer to the unk data of 1st track in playlist[2] (main playlist)
-                    '''
-
+                
                     file.write(unkData_ptr.to_bytes(4, byteorder="little"))
 
-                    '''
-                    If a track doesn't have unk data assigned to it i.e. newly added track,
-                    assign it with a unk Data of 1st track in playlists[2] (main playlist)
-                    '''
                     if track['basename'] in self.unkData:
                         unkData_ptr += len(self.unkData[track['basename']])
                     else:
-                        unkData_ptr += len(self.unkData[playlists[0]['tracks'][0]['basename']])
-                        unkData_ptr += len(self.unkData[playlists[1]['tracks'][0]['basename']])
+                        unkData_ptr += len(self.temp_unkData)
 
             for playlist in playlists:
                 for track in playlist['tracks']:

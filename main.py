@@ -140,7 +140,10 @@ if __name__ == '__main__':
                 selected_track = 0
         
         elif event == 'Save':
-            editor.assemble_and_save("out.inf")
-            sg.popup("Saved as "+"out.inf")
+            if(len(editor.playlists[2]['tracks']) == 0):
+                sg.popup("Playlist can't be empty.")
+            else:
+                editor.assemble_and_save("out.inf")
+                sg.popup("Saved as "+"out.inf")
     
     window.close()
