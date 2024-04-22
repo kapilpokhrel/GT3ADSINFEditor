@@ -17,7 +17,7 @@ table = sg.Table(
 )
 
 layout = [
-    [sg.Button("Open"), sg.Button("Save"), sg.VerticalSeparator(),
+    [sg.Button("Open"), sg.Button("Save"), sg.Button("Save As"), sg.VerticalSeparator(),
         sg.Button("Add"), sg.Button("Remove"), sg.Button("Up"), sg.Button("Down")],
     [table]
 ]
@@ -64,6 +64,9 @@ def add_window():
     return trackinfo
 
 selected_track = 0
+
+filepath = ""
+
 if __name__ == '__main__':
     window = sg.Window("GT3ADSINFEditor", layout=layout, size=(720,480));
 
@@ -99,7 +102,7 @@ if __name__ == '__main__':
         
         elif event == 'Remove':
             if editor == None:
-                sg.popup("Open the ads file first to add track.")
+                sg.popup("Open the ads file first to add track.", file_types = (('.inf File', '*.inf')))
             elif editor.playlists[2]['trackCount'] == 0:
                 pass
             else:
@@ -143,7 +146,16 @@ if __name__ == '__main__':
             if(len(editor.playlists[2]['tracks']) == 0):
                 sg.popup("Playlist can't be empty.")
             else:
-                editor.assemble_and_save("out.inf")
-                sg.popup("Saved as "+"out.inf")
+                editor.assemble_and_save(filepath)
+                sg.popup("Saved as "+ filepath)
+
+        elif event == 'Save As':
+            save_as_path = sg.popup_get_file("Choose the path to save the .inf file.", save_as = True, file_types = (('.inf File', '*.inf'),))
+            if save_as_path not in [None, ""]:
+                if(len(editor.playlists[2]['tracks']) == 0):
+                    sg.popup("Playlist can't be empty.")
+                else:
+                    editor.assemble_and_save(save_as_path)
+                    sg.popup("Saved as "+ save_as_path)
     
     window.close()
